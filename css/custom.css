@@ -1,0 +1,8 @@
+#def-bar .x.axis text {
+    text-anchor: end !important;
+    transform: rotate(-45deg);
+}
+#plt-bar .x.axis text {
+    text-anchor: end !important;
+    transform: rotate(-45deg);
+}
