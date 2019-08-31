@@ -1,4 +1,4 @@
-d3.csv("data/flatten.csv")
+d3.csv("data/update2.csv")
 .then(function(data) {
 
   var parseDate = d3.timeParse("%Y-%m-%d");
@@ -14,6 +14,10 @@ d3.csv("data/flatten.csv")
     d.reason = d.reason;
     d.no = d.no;
     d.mainText = d.mainText;
+    d.laws = d.laws;
+    d.arguements = d.arguements;
+    d.fee = d.fee;
+    d.judge = d.judge;
   })
 
   console.log(data[0]);
@@ -23,7 +27,8 @@ d3.csv("data/flatten.csv")
   sysPie = dc.pieChart("#sys-pie"),
   typePie = dc.pieChart("#type-pie"),
   defRow = dc.rowChart("#def-row"),
-  pltRow = dc.rowChart("#plt-row");
+  pltRow = dc.rowChart("#plt-row"),
+  rsRow = dc.rowChart("#rs-row");
 
   var ndx = crossfilter(data),
   courtDimension = ndx.dimension(function(d) { return d.court; }),
@@ -31,12 +36,13 @@ d3.csv("data/flatten.csv")
   typeDimension = ndx.dimension(function(d) { return d.type; }),
   defDimension = ndx.dimension(function(d) { return d.defendant; }),
   pltDimension = ndx.dimension(function(d) { return d.plaintiff; }),
+  rsDimension = ndx.dimension(function(d) { return d.reason; }),
   sysGroup = sysDimension.group().reduceCount(),
   typeGroup = typeDimension.group().reduceCount(),
   defRawGroup = defDimension.group().reduceCount(),
   pltRawGroup = pltDimension.group().reduceCount();
+  rsRawGroup = rsDimension.group().reduceCount();
 
-console.log(pltRawGroup.top(10));
   function getTops(source_group) {
     return {
         all: function () {
@@ -52,8 +58,8 @@ console.log(pltRawGroup.top(10));
     };
 }
 var defGroup = getTops(defRawGroup),
-pltGroup = getTops(pltRawGroup);
-console.log(pltGroup);
+pltGroup = getTops(pltRawGroup),
+rsGroup = getTops(rsRawGroup);
 
 
   selectMulti
@@ -101,6 +107,14 @@ console.log(pltGroup);
   .elasticX(true)
   .dimension(pltDimension)
   .group(pltGroup)
+  .cap(10);
+
+  rsRow
+  .width(768)
+  .height(480)
+  .elasticX(true)
+  .dimension(rsDimension)
+  .group(rsGroup)
   .cap(10);
 
 
