@@ -26,6 +26,8 @@ d3.csv("data/update2.csv")
   var selectMulti = dc.selectMenu("#select"),
   sysPie = dc.pieChart("#sys-pie"),
   typePie = dc.pieChart("#type-pie"),
+  textFilter = dc.textFilterWidget("#search"),
+  textTable = dc.dataTable('.dc-data-grid'),
   defRow = dc.rowChart("#def-row"),
   pltRow = dc.rowChart("#plt-row"),
   rsRow = dc.rowChart("#rs-row");
@@ -34,6 +36,7 @@ d3.csv("data/update2.csv")
   courtDimension = ndx.dimension(function(d) { return d.court; }),
   sysDimension = ndx.dimension(function(d) { return d.sys; }),
   typeDimension = ndx.dimension(function(d) { return d.type; }),
+  nameDimension = ndx.dimension(function(d) { return d.defendant + d.plaintiff; }),
   defDimension = ndx.dimension(function(d) { return d.defendant; }),
   pltDimension = ndx.dimension(function(d) { return d.plaintiff; }),
   rsDimension = ndx.dimension(function(d) { return d.reason; }),
@@ -45,21 +48,21 @@ d3.csv("data/update2.csv")
 
   function getTops(source_group) {
     return {
-        all: function () {
-          var result = source_group.top(25).slice(0),
-          output = [];
-          result.forEach(function(d) {
-                if(d.key !== "" & !d.key.includes("○○")) {
-                  output.push(d);
-                }
-            });
-            return output;
-        }
+      all: function () {
+        var result = source_group.top(25).slice(0),
+        output = [];
+        result.forEach(function(d) {
+          if(d.key !== "" & !d.key.includes("○○")) {
+            output.push(d);
+          }
+        });
+        return output;
+      }
     };
-}
-var defGroup = getTops(defRawGroup),
-pltGroup = getTops(pltRawGroup),
-rsGroup = getTops(rsRawGroup);
+  }
+  var defGroup = getTops(defRawGroup),
+  pltGroup = getTops(pltRawGroup),
+  rsGroup = getTops(rsRawGroup);
 
 
   selectMulti
@@ -93,13 +96,16 @@ rsGroup = getTops(rsRawGroup);
     })
   });
 
+  textFilter
+  .dimension(nameDimension);
+
   defRow
-    .width(768)
-    .height(480)
-    .elasticX(true)
-    .dimension(defDimension)
-    .group(defGroup)
-    .cap(10);
+  .width(768)
+  .height(480)
+  .elasticX(true)
+  .dimension(defDimension)
+  .group(defGroup)
+  .cap(10);
 
   pltRow
   .width(768)
@@ -117,7 +123,30 @@ rsGroup = getTops(rsRawGroup);
   .group(rsGroup)
   .cap(10);
 
+  textTable
+  .dimension(nameDimension)
+  .showSections(false)
+  .columns([
+    function (d) {
+      return d.no;
+    },
+    function (d) {
+      return d.reason;
+    },
+    function (d) {
+      return d.plaintiff;
+    },
+    function (d) {
+      return d.defendant;
+    },
+    function (d) {
+      return d.judge;
+    },
+    function (d) {
+      return d.fee;
+    }]);
 
-  dc.renderAll();
-  // end of dc.js
-});
+
+    dc.renderAll();
+    // end of dc.js
+  });
