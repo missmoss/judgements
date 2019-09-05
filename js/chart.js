@@ -1,4 +1,4 @@
-d3.csv("data/update2.csv")
+d3.csv("data/update3.csv")
 .then(function(data) {
 
   var parseDate = d3.timeParse("%Y-%m-%d");
@@ -13,14 +13,12 @@ d3.csv("data/update2.csv")
     d.plaintiff = d.plaintiff;
     d.reason = d.reason;
     d.no = d.no;
-    d.mainText = d.mainText;
     d.laws = d.laws;
     d.arguements = d.arguements;
     d.fee = d.fee;
     d.judge = d.judge;
+    d.topics = d.topics;
   })
-
-  console.log(data[0]);
 
   // registration: charts in this page
   var selectMulti = dc.selectMenu("#select"),
@@ -144,6 +142,12 @@ d3.csv("data/update2.csv")
     },
     function (d) {
       return d.fee;
+    },
+    function (d) {
+      return d.arguements;
+    },
+    function (d) {
+      return d.topics;
     }]);
 
 
